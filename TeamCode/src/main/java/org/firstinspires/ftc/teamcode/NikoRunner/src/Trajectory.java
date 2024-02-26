@@ -21,6 +21,9 @@ public class Trajectory {
         return splineList.get(splineList.size()).getEndPose();
     }
 
+    public ArrayList<Spline2d> getSplineList() {
+        return splineList;
+    }
 
     public static class TrajectoryBuilder {
         ArrayList<SplineValues2d> splinePath = new ArrayList<>();
@@ -58,6 +61,7 @@ public class Trajectory {
                 boolean continuous = splinePath.get(i).type.equals("splineToProfiledHeading") || 
                 splinePath.get(i).type.equals("splineLineToProfiledHeading");
 
+                // Probably will not be needed
                 // try {
                 //     if(continuous != lastContinuity) {
                 //         throw new Exception("Spline is not continuous!");

@@ -6,11 +6,11 @@ public class MathUtility {
 
 
 
-    public boolean isInPose2dRange(Pose2d targetPose, Pose2d currentPose, Pose2d error) {
+    public static boolean isInPose2dRange(Pose2d targetPose, Pose2d currentPose, Pose2d error) {
         Pose2d poseError = new Pose2d(
-                currentPose.getX() - targetPose.getX(),
-                currentPose.getY() - targetPose.getY(),
-                currentPose.getRotation() - targetPose.getRotation());
+                targetPose.getX() - currentPose.getX(),
+                targetPose.getY() - currentPose.getY(),
+                targetPose.getRotation() - currentPose.getRotation());
 
         boolean[] inError =  {poseError.getX() <= error.getX(), poseError.getY() <= error.getY(), poseError.getRotation() <= error.getRotation()};
 

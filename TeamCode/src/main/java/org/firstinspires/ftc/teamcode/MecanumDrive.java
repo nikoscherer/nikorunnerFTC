@@ -4,8 +4,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.NikoRunner.src.Pose2d;
+import org.firstinspires.ftc.teamcode.NikoRunner.src.Spline2d;
 import org.firstinspires.ftc.teamcode.NikoRunner.src.Trajectory;
 import org.firstinspires.ftc.teamcode.NikoRunner.src.Vector2d;
+
+import java.util.ArrayList;
 
 public class MecanumDrive {
 
@@ -43,13 +46,26 @@ public class MecanumDrive {
 
 
     // AUTONOMOUS
+    Pose2d robotPose;
 
     Pose2d allowedError = new Pose2d(.5, .5, 5);
 //    double timeError = 1000; for when we will calculate estimated time to target pose
 
+    public void setRobotPose(Pose2d poseUpdate) {
+        robotPose = poseUpdate;
+    }
+
 
     public void followTrajectory(Trajectory trajectory) {
+        // While trajectory is not completed, will need an actual way to do this instead of a while loop
+        while(MathUtility.isInPose2dRange(trajectory.end(), robotPose, allowedError)) {
 
+            ArrayList<Spline2d> splines = trajectory.getSplineList();
+
+
+            // FOLLOW TRAJECTORY
+            drive(new Vector2d(0, 0), 0);
+        }
     }
 }
 
