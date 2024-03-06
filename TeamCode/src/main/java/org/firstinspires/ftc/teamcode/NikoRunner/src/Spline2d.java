@@ -13,6 +13,10 @@ public class Spline2d {
         this.type = type;
     }
 
+    public ArrayList<Vector2d> getPointList() {
+        return pointList;
+    }
+
     public Pose2d getEndPose() {
         return new Pose2d(pointList.get(pointList.size()), targetRotation);
     }

@@ -57,17 +57,63 @@ public class MecanumDrive {
 
 
     public void followTrajectory(Trajectory trajectory) {
+        int lastSpline = 0;
+        int lastPoint = 0;
+
+        int currentSpline = 0;
+        int currentPoint = 0;
+
         // While trajectory is not completed, will need an actual way to do this instead of a while loop
         while(MathUtility.isInPose2dRange(trajectory.end(), robotPose, allowedError)) {
 
             ArrayList<Spline2d> splines = trajectory.getSplineList();
 
 
+
+            
             // FOLLOW TRAJECTORY
             drive(new Vector2d(0, 0), 0);
+
+
+
+
+            // If robot pose is in the correct position, switch to new point, spline, or exit trajectory.
+            if(MathUtility.isInPose2dRange(splines.get(currentSpline).get(currentPoint), robotPose, allowedError)) {
+                if(splines.get(currentSpline).size() <= currentPoint) {
+                    if(splines.size() <= currentSpline) {
+                        // DONE WITH TRAJECTORY
+                        break;
+                    } else {
+                        // MOVE TO NEXT SPLINE IN TRAJECTORY
+                        currentSpline = currentSpline + 1;
+                    }
+                } else {
+                    // MOVE TO NEXT POINT IN SPLINE
+                    currentPoint = currentPoint + 1;
+                }
+            }
+            
+            // Find current spline in trajectory
+            // Get points inside of spline
+            // Set target drive vector to target spline point
+            // Set motor velocities/power to trapezoidal motion profile that is used the entire trajectory
+
+
+            int lastSpline = currentSpline;
+            int lastPoint = currentSpline;
         }
+
+        drive(new Vector2d(0, 0), 0);
     }
 }
+
+
+
+
+
+
+
+
 
 
 // WOLFPACK EQUATION
