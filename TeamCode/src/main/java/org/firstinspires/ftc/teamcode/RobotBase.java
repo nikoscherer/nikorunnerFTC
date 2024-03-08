@@ -40,4 +40,10 @@ public class RobotBase {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
     }
+
+    public void update() {
+        
+
+        drive.update(false, )
+    }
 }

@@ -14,7 +14,7 @@ public class MecanumDrive {
 
     DcMotorEx fl, fr, bl, br;
 
-    boolean FOD;
+    double robotHeading;
 
     public MecanumDrive(HardwareMap hardwareMap) {
         fl = hardwareMap.get(DcMotorEx.class, "FrontLeft");
@@ -23,15 +23,15 @@ public class MecanumDrive {
         br = hardwareMap.get(DcMotorEx.class, "BackRight");
     }
 
-    public void update(boolean FOD) {
-        this.FOD = FOD;
+    public void update(double heading) {
+        this.heading = robotHeading;
     }
 
-    public void updateDrive(double LY, double LX, double RX, double currentHeading) {
+    public void updateDrive(double LY, double LX, double RX, boolean FOD) {
         Vector2d driveVector = new Vector2d(LY, LX);
 
         if(FOD) {
-            driveVector.rotateVector(currentHeading);
+            driveVector.rotateVector(heading);
         }
 
         drive(driveVector, RX);
@@ -57,24 +57,32 @@ public class MecanumDrive {
 
 
     public void followTrajectory(Trajectory trajectory) {
-        int lastSpline = 0;
-        int lastPoint = 0;
 
         int currentSpline = 0;
         int currentPoint = 0;
 
-        // While trajectory is not completed, will need an actual way to do this instead of a while loop
+        // While trajectory is not completed, will need an actual way to do this instead of a while loop, this probably will not even work correctly and just crash.
         while(MathUtility.isInPose2dRange(trajectory.end(), robotPose, allowedError)) {
 
             ArrayList<Spline2d> splines = trajectory.getSplineList();
 
 
-
-            
             // FOLLOW TRAJECTORY
-            drive(new Vector2d(0, 0), 0);
+            
+            // TARGET MOTOR POWER (FOR TESTING, NEED TO SWITCH TO PROFILED PID LATER)
+            int power = .25;
 
+            Vector2d targetPoint = splines.get(currentSpline).get(currentPoint);
+        
+            // Might be different, need to test.
+            double targetDirection = math.atan2(targetPoint.getX() - robotPose.getX(), 
+            targetPoint.getY() - robotPose.getY());
 
+            Vector2d transformedVector = rotateByAngle(targetPoint, targetDirection);
+
+            // Should follow, but will not use heading yet.
+            // Should test this when able to.
+            drive(transformedVector, power * robotHeading);
 
 
             // If robot pose is in the correct position, switch to new point, spline, or exit trajectory.
@@ -92,15 +100,6 @@ public class MecanumDrive {
                     currentPoint = currentPoint + 1;
                 }
             }
-            
-            // Find current spline in trajectory
-            // Get points inside of spline
-            // Set target drive vector to target spline point
-            // Set motor velocities/power to trapezoidal motion profile that is used the entire trajectory
-
-
-            int lastSpline = currentSpline;
-            int lastPoint = currentSpline;
         }
 
         drive(new Vector2d(0, 0), 0);

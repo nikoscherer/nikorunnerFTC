@@ -4,8 +4,6 @@ import org.firstinspires.ftc.teamcode.NikoRunner.src.Pose2d;
 
 public class MathUtility {
 
-
-
     public static boolean isInPose2dRange(Pose2d targetPose, Pose2d currentPose, Pose2d error) {
         Pose2d poseError = new Pose2d(
                 targetPose.getX() - currentPose.getX(),
@@ -15,5 +13,12 @@ public class MathUtility {
         boolean[] inError =  {poseError.getX() <= error.getX(), poseError.getY() <= error.getY(), poseError.getRotation() <= error.getRotation()};
 
         return inError[0] && inError[1] && inError[2];
+    }
+
+    public static Vector2d rotateByAngle(Vector2d vector, double radians) {
+        double xValue = vector.getX() * Math.cos(radians) - vector.getY() * Math.sin(radians);
+        double yValue = vector.getX() * Math.sin(radians) + vector.getY() * Math.cos(radians);
+
+        return new Vector2d(xValue, yValue);
     }
 }
