@@ -14,6 +14,13 @@ public class Trajectory {
         this.paths = builder.splinePath;
     }
 
+    /**
+     * @return returns a trajectories start pose
+     */
+    public Pose2d start() {
+        return splineList.get(0).get(0);
+    }
+
     /** 
      * @return returns a trajectories end pose
      */
