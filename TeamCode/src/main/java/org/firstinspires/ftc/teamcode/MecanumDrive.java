@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.NikoRunner.src.Spline2d;
 import org.firstinspires.ftc.teamcode.NikoRunner.src.Trajectory;
 import org.firstinspires.ftc.teamcode.NikoRunner.src.Vector2d;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class MecanumDrive {
@@ -49,91 +50,54 @@ public class MecanumDrive {
     Pose2d robotPose;
 
     Pose2d allowedError = new Pose2d(.5, .5, 5);
+
+    double followRadius = 4; // in
 //    double timeError = 1000; for when we will calculate estimated time to target pose
 
     public void setRobotPose(Pose2d poseUpdate) {
         robotPose = poseUpdate;
     }
 
+    public void followTrajectory(Path path) {
 
-    public void followTrajectory(Trajectory trajectory) {
-
-        int currentSpline = 0;
-
-        // While trajectory is not completed, will need an actual way to do this instead of a while loop, this probably will not even work correctly and just crash.
-        while(MathUtility.isInPose2dRange(trajectory.end(), robotPose, allowedError)) {
-
-            // FULL TRAJECTORY
-            ArrayList<Spline2d> splines = trajectory.getSplineList();
-
-
-            Vector2d closestPoint;
-
-
-            /*
-             * CURRENT WAY, NEED A BETTER WAY (LIKE PURE PURSUIT) TO FOLLOW THE SPLINES,
-             * ONCE FOLLOWING SOMEWHAT WORKS, SWITCH TO A NEW WAY.
-             * 
-             * GET LINE SEGMENT
-             * MAKE CIRCLE
-             * FIND FARTHEST PATH IN CIRCLE
-             * SET DIRECION TO THAT POINT
-             * SET MOTOR SPEEDS USING TRAPEZOIDAL PID CONTROLLER
-             */
+        ArrayList<Spline2d> splinePaths = path.getSplineList();
 
             
-            // Test for individual splines
-            double radius = 3; // FOLLOW RADIUS, in Inches
-            Circle2d circle = new Circle2d(robotPose.getX(), robotPose.getY(), radius);
+        Circle2d circle = new Circle2d(robotPose.getX(), robotPose.getY(), followRadius);
 
-            // Check through spline points if it intersects the circle
-            Vector2d firstLinePoint = new Vector2d(5, 5);
-            Vector2d secondLinePoint = new Vector2d(10, 10);
-            
-            // Get current splines waypoints
-            ArrayList<SplineValues2d> waypoints = splines.get(currentSpline);
-            
-            for(int i = 1; i < waypoints.size(); i++) {
+        ArrayList<Point2D> waypoints = new ArrayList<>();
 
-                Vector2d distance = new Vector2d(
-                    waypoints.get(i).getX() - circle.getX(),
-                    waypoint.get(i).getY() - cirle.getY()
-                );
-
-                if(distance.getFullVector() <= radius) {
-                    if(closestPoint == null) {
-                        closestPoint = waypoints.get(i);
-                    } else if(closestPoint.getFullVector() >= distance.getFullVector()){
-                        closestPoint = waypoints.get(i);
-                    }
-                }
-            }
-
-
-            // REDO THIS
-            // If robot pose is in the correct position, switch to new point, spline, or exit trajectory.
-            if(MathUtility.isInPose2dRange(splines.get(currentSpline).get(currentPoint), robotPose, allowedError)) {
-                if(splines.get(currentSpline).size() <= currentPoint) {
-                    if(splines.size() <= currentSpline) {
-                        // DONE WITH TRAJECTORY
-                        break;
-                    } else {
-                        // MOVE TO NEXT SPLINE IN TRAJECTORY
-                        currentSpline = currentSpline + 1;
-                    }
-                } else {
-
-                    
-                    // MOVE TO NEXT POINT IN SPLINE
-                }
+        for(int i = 0; i < spinePaths.size(); i++) {
+            for(int j = 0; j < waypoints.size(); j++) {
+                waypoints.add(splinePaths.get(i).get(j));
             }
         }
 
-        // set to power vector
-        drive(new Vector2d(0, 0), 0);
+
+        Vector2d targetPoint;
+
+        for(int i = 0; i < waypoints.size(); i++) {
+            Vector2d distance = waypoints.get(i).toVector2d().minus(circle.getLocation().toVector2d());
+
+            if(distance.getMagnitude() <= followRadius) {
+                targetPoint = waypoints.get(i);
+            }
+        }
 
 
+        if(targetPoint != null) {
+            // Follow to point
+
+            Vector2d driveVector = new Vector2d(
+                0.25, //Speed (will input profiled pid later)
+                Math.atan2(distance.getY(), distance.getX()) // Might be reverse.
+            );
+        }
         
+
+
+
+
     }
 }
 

@@ -1,13 +1,12 @@
-package org.firstinspires.ftc.teamcode.NikoRunner.src;
-
+package Geometry;
 import java.util.ArrayList;
 
 public class Line2d {
-    ArrayList<Vector2d> pointList;
-    Rotation2d targetRotation;
+    ArrayList<Point2d> pointList;
+    double targetRotation;
     String type;
 
-    public Line2d(ArrayList<Vector2d> pointList, Rotation2d targetRotation, String type) {
+    public Line2d(ArrayList<Point2d> pointList, double targetRotation, String type) {
         this.pointList = pointList;
         this.targetRotation = targetRotation;
         this.type = type;
@@ -17,7 +16,7 @@ public class Line2d {
         return new Pose2d(pointList.get(pointList.size()), targetRotation);
     }
 
-    public Rotation2d getTargetRotation2d() {
+    public double getTargetRotation2d() {
         return targetRotation;
     }
 
